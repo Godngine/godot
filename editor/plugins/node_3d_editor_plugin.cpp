@@ -3089,7 +3089,7 @@ void Node3DEditorViewport::_notification(int p_what) {
 				List<Node *> &selection = editor_selection->get_selected_node_list();
 
 				if (selection.size() == 1) {
-					Node3D *first_selected_node = Object::cast_to<Node3D>(selection.front()->get());
+					Node3D *first_selected_node = Object::cast_to<Node3D>(selection.get_front());
 					double snap = EDITOR_GET("interface/inspector/default_float_step");
 					int snap_step_decimals = Math::range_step_decimals(snap);
 					set_message(TTR("Translating:") + " (" + String::num(first_selected_node->get_global_position().x, snap_step_decimals) + ", " +
@@ -4293,7 +4293,7 @@ Vector3 Node3DEditorViewport::_get_instance_position(const Point2 &p_pos, Node3D
 	if (!preview_node->is_inside_tree()) {
 		List<Node *> &selection = editor_selection->get_selected_node_list();
 
-		Node3D *first_selected_node = Object::cast_to<Node3D>(selection.front()->get());
+		Node3D *first_selected_node = Object::cast_to<Node3D>(selection.get_front());
 
 		Array children = first_selected_node->get_children();
 

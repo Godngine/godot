@@ -685,7 +685,7 @@ struct _VariantCall {
 		String s;
 		if (p_instance->size() > 0) {
 			const uint8_t *r = p_instance->ptr();
-			s.parse_utf16((const char16_t *)r, floor((double)p_instance->size() / (double)sizeof(char16_t)));
+			s.parse_utf16((const char16_t *)r, Math::floor((double)p_instance->size() / (double)sizeof(char16_t)));
 		}
 		return s;
 	}
@@ -694,7 +694,7 @@ struct _VariantCall {
 		String s;
 		if (p_instance->size() > 0) {
 			const uint8_t *r = p_instance->ptr();
-			s = String((const char32_t *)r, floor((double)p_instance->size() / (double)sizeof(char32_t)));
+			s = String((const char32_t *)r, Math::floor((double)p_instance->size() / (double)sizeof(char32_t)));
 		}
 		return s;
 	}
@@ -704,9 +704,9 @@ struct _VariantCall {
 		if (p_instance->size() > 0) {
 			const uint8_t *r = p_instance->ptr();
 #ifdef WINDOWS_ENABLED
-			s.parse_utf16((const char16_t *)r, floor((double)p_instance->size() / (double)sizeof(char16_t)));
+			s.parse_utf16((const char16_t *)r, Math::floor((double)p_instance->size() / (double)sizeof(char16_t)));
 #else
-			s = String((const char32_t *)r, floor((double)p_instance->size() / (double)sizeof(char32_t)));
+			s = String((const char32_t *)r, Math::floor((double)p_instance->size() / (double)sizeof(char32_t)));
 #endif
 		}
 		return s;

@@ -31,11 +31,9 @@
 #ifndef RANDOM_PCG_H
 #define RANDOM_PCG_H
 
-#include "core/math/math_defs.h"
+#include "core/math/math_funcs.h"
 
 #include "thirdparty/misc/pcg.h"
-
-#include <math.h>
 
 #if defined(__GNUC__)
 #define CLZ32(x) __builtin_clz(x)
@@ -54,9 +52,8 @@ static int __bsr_clz32(uint32_t x) {
 #define LDEXP(s, e) __builtin_ldexp(s, e)
 #define LDEXPF(s, e) __builtin_ldexpf(s, e)
 #else
-#include <math.h>
-#define LDEXP(s, e) ldexp(s, e)
-#define LDEXPF(s, e) ldexp(s, e)
+#define LDEXP(s, e) ::ldexp(s, e)
+#define LDEXPF(s, e) ::ldexpf(s, e)
 #endif
 
 template <typename T>
@@ -135,14 +132,14 @@ public:
 		if (temp < CMP_EPSILON) {
 			temp += CMP_EPSILON; // To prevent generating of INF value in log function, resulting to return NaN value from this function.
 		}
-		return p_mean + p_deviation * (cos(Math_TAU * randd()) * sqrt(-2.0 * log(temp))); // Box-Muller transform.
+		return p_mean + p_deviation * (Math::cos(Math_TAU * randd()) * Math::sqrt(-2.0 * Math::log(temp))); // Box-Muller transform.
 	}
 	_FORCE_INLINE_ float randfn(float p_mean, float p_deviation) {
 		float temp = randf();
 		if (temp < CMP_EPSILON) {
 			temp += CMP_EPSILON; // To prevent generating of INF value in log function, resulting to return NaN value from this function.
 		}
-		return p_mean + p_deviation * (cos((float)Math_TAU * randf()) * sqrt(-2.0 * log(temp))); // Box-Muller transform.
+		return p_mean + p_deviation * (Math::cos((float)Math_TAU * randf()) * Math::sqrt(-2.0 * Math::log(temp))); // Box-Muller transform.
 	}
 
 	double random(double p_from, double p_to);

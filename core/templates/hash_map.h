@@ -32,10 +32,10 @@
 #define HASH_MAP_H
 
 #include "core/math/math_funcs.h"
-#include "core/os/memory.h"
 #include "core/templates/hashfuncs.h"
 #include "core/templates/paged_allocator.h"
 #include "core/templates/pair.h"
+#include "core/templates/typed_static_block_allocator.h"
 
 /**
  * A HashMap implementation that uses open addressing with Robin Hood hashing.
@@ -64,7 +64,7 @@ struct HashMapElement {
 template <typename TKey, typename TValue,
 		typename Hasher = HashMapHasherDefault,
 		typename Comparator = HashMapComparatorDefault<TKey>,
-		typename Allocator = DefaultTypedAllocator<HashMapElement<TKey, TValue>>>
+		typename Allocator = TypedStaticBlockAllocator<HashMapElement<TKey, TValue>>>
 class HashMap {
 public:
 	static constexpr uint32_t MIN_CAPACITY_INDEX = 2; // Use a prime.

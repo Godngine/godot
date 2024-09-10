@@ -3514,6 +3514,8 @@ void GLTFDocument::_parse_image_save_image(Ref<GLTFState> p_state, const Vector<
 	if (Engine::get_singleton()->is_editor_hint() && handling == GLTFState::GLTFHandleBinary::HANDLE_BINARY_EXTRACT_TEXTURES) {
 		if (p_state->base_path.is_empty()) {
 			WARN_PRINT("glTF: Couldn't extract image because the base path is empty. It will be loaded directly instead, uncompressed.");
+		} else if (p_state->base_path.begins_with("res://.godot/imported")) {
+			WARN_PRINT(vformat("glTF: Image index '%d' is in the imported directory, likely converted from a Blend file. It will be loaded directly, uncompressed.", p_index));
 		} else if (p_image->get_name().is_empty()) {
 			WARN_PRINT(vformat("glTF: Image index '%d' couldn't be named. This cannot be saved to a file. It will be loaded directly instead, uncompressed.", p_index));
 		} else {
@@ -3654,16 +3656,19 @@ Error GLTFDocument::_parse_images(Ref<GLTFState> p_state, const String &p_base_p
 				ERR_FAIL_COND_V(p_base_path.is_empty(), ERR_INVALID_PARAMETER);
 				uri = uri.uri_decode();
 				uri = p_base_path.path_join(uri).replace("\\", "/"); // Fix for Windows.
-				// ResourceLoader will rely on the file extension to use the relevant loader.
-				// The spec says that if mimeType is defined, it should take precedence (e.g.
-				// there could be a `.png` image which is actually JPEG), but there's no easy
-				// API for that in Godot, so we'd have to load as a buffer (i.e. embedded in
-				// the material), so we only do that only as fallback.
-				Ref<Texture2D> texture = ResourceLoader::load(uri, "Texture2D");
-				if (texture.is_valid()) {
-					p_state->images.push_back(texture);
-					p_state->source_images.push_back(texture->get_image());
-					continue;
+				// If the image was converted from a Blend file, it will be in the .godot/imported directory, so we can't use ResourceLoader.
+				if (!p_base_path.begins_with("res://.godot/imported")) {
+					// ResourceLoader will rely on the file extension to use the relevant loader.
+					// The spec says that if mimeType is defined, it should take precedence (e.g.
+					// there could be a `.png` image which is actually JPEG), but there's no easy
+					// API for that in Godot, so we'd have to load as a buffer (i.e. embedded in
+					// the material), so we only do that only as fallback.
+					Ref<Texture2D> texture = ResourceLoader::load(uri, "Texture2D");
+					if (texture.is_valid()) {
+						p_state->images.push_back(texture);
+						p_state->source_images.push_back(texture->get_image());
+						continue;
+					}
 				}
 				// mimeType is optional, but if we have it in the file extension, let's use it.
 				// If the mimeType does not match with the file extension, either it should be

@@ -2050,9 +2050,9 @@ TypedArray<Dictionary> RenderingServer::_instance_geometry_get_shader_parameter_
 	return convert_property_list(&params);
 }
 
-TypedArray<Dictionary> RenderingServer::_instance_item_get_shader_parameter_list(RID p_instance) const {
+TypedArray<Dictionary> RenderingServer::_canvas_item_get_instance_shader_parameter_list(RID p_instance) const {
 	List<PropertyInfo> params;
-	instance_item_get_shader_parameter_list(p_instance, &params);
+	canvas_item_get_instance_shader_parameter_list(p_instance, &params);
 	return convert_property_list(&params);
 }
 
@@ -3281,10 +3281,10 @@ void RenderingServer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("canvas_item_set_material", "item", "material"), &RenderingServer::canvas_item_set_material);
 	ClassDB::bind_method(D_METHOD("canvas_item_set_use_parent_material", "item", "enabled"), &RenderingServer::canvas_item_set_use_parent_material);
 
-	ClassDB::bind_method(D_METHOD("instance_item_set_shader_parameter", "instance", "parameter", "value"), &RenderingServer::instance_item_set_shader_parameter);
-	ClassDB::bind_method(D_METHOD("instance_item_get_shader_parameter", "instance", "parameter"), &RenderingServer::instance_item_get_shader_parameter);
-	ClassDB::bind_method(D_METHOD("instance_item_get_shader_parameter_default_value", "instance", "parameter"), &RenderingServer::instance_item_get_shader_parameter_default_value);
-	ClassDB::bind_method(D_METHOD("instance_item_get_shader_parameter_list", "instance"), &RenderingServer::_instance_item_get_shader_parameter_list);
+	ClassDB::bind_method(D_METHOD("canvas_item_set_instance_shader_parameter", "instance", "parameter", "value"), &RenderingServer::canvas_item_set_instance_shader_parameter);
+	ClassDB::bind_method(D_METHOD("canvas_item_get_instance_shader_parameter", "instance", "parameter"), &RenderingServer::canvas_item_get_instance_shader_parameter);
+	ClassDB::bind_method(D_METHOD("canvas_item_get_instance_shader_parameter_default_value", "instance", "parameter"), &RenderingServer::canvas_item_get_instance_shader_parameter_default_value);
+	ClassDB::bind_method(D_METHOD("canvas_item_get_instance_shader_parameter_list", "instance"), &RenderingServer::_canvas_item_get_instance_shader_parameter_list);
 
 	ClassDB::bind_method(D_METHOD("canvas_item_set_visibility_notifier", "item", "enable", "area", "enter_callable", "exit_callable"), &RenderingServer::canvas_item_set_visibility_notifier);
 	ClassDB::bind_method(D_METHOD("canvas_item_set_canvas_group_mode", "item", "mode", "clear_margin", "fit_empty", "fit_margin", "blur_mipmaps"), &RenderingServer::canvas_item_set_canvas_group_mode, DEFVAL(5.0), DEFVAL(false), DEFVAL(0.0), DEFVAL(false));

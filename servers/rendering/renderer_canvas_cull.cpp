@@ -44,6 +44,29 @@
 // while not making lines appear too soft.
 const static float FEATHER_SIZE = 1.25f;
 
+static RendererCanvasCull *_canvas_cull_singleton{};
+
+void RendererCanvasCull::_dependency_changed(Dependency::DependencyChangedNotification p_notification, DependencyTracker *p_tracker) {
+	Item *item = (Item *)p_tracker->userdata;
+
+	switch (p_notification) {
+		case Dependency::DEPENDENCY_CHANGED_MATERIAL: {
+			_canvas_cull_singleton->_item_queue_update(item, true);
+		} break;
+		default: {
+		} break;
+	}
+}
+
+void RendererCanvasCull::_dependency_deleted(const RID &p_dependency, DependencyTracker *p_tracker) {
+	Item *item = (Item *)p_tracker->userdata;
+
+	if (p_dependency == item->material) {
+		_canvas_cull_singleton->canvas_item_set_material(item->self, RID());
+	}
+	_canvas_cull_singleton->_item_queue_update(item, true);
+}
+
 void RendererCanvasCull::_render_canvas_item_tree(RID p_to_render_target, Canvas::ChildItem *p_child_items, int p_child_item_count, const Transform2D &p_transform, const Rect2 &p_clip_rect, const Color &p_modulate, RendererCanvasRender::Light *p_lights, RendererCanvasRender::Light *p_directional_lights, RenderingServer::CanvasItemTextureFilter p_default_filter, RenderingServer::CanvasItemTextureRepeat p_default_repeat, bool p_snap_2d_vertices_to_pixel, uint32_t p_canvas_cull_mask, RenderingMethod::RenderInfo *r_render_info) {
 	RENDER_TIMESTAMP("Cull CanvasItem Tree");
 
@@ -1820,10 +1843,6 @@ void RendererCanvasCull::canvas_item_clear(RID p_item) {
 		canvas_item->debug_redraw_time = debug_redraw_time;
 	}
 #endif
-
-	if (!canvas_item->update_item.in_list()) {
-		_instance_update_list.add(&canvas_item->update_item);
-	}
 }
 
 void RendererCanvasCull::canvas_item_set_draw_index(RID p_item, int p_index) {
@@ -1850,6 +1869,7 @@ void RendererCanvasCull::canvas_item_set_material(RID p_item, RID p_material) {
 	ERR_FAIL_NULL(canvas_item);
 
 	canvas_item->material = p_material;
+	_item_queue_update(canvas_item, true);
 }
 
 void RendererCanvasCull::canvas_item_set_use_parent_material(RID p_item, bool p_enable) {
@@ -1859,92 +1879,35 @@ void RendererCanvasCull::canvas_item_set_use_parent_material(RID p_item, bool p_
 	canvas_item->use_parent_material = p_enable;
 }
 
-void RendererCanvasCull::_update_instance_shader_uniforms_from_material(HashMap<StringName, Item::InstanceShaderParameter> &isparams, const HashMap<StringName, Item::InstanceShaderParameter> &existing_isparams, RID p_material) {
-	List<RendererMaterialStorage::InstanceShaderParam> plist;
-	RSG::material_storage->material_get_instance_shader_parameters(p_material, &plist);
-	for (const RendererMaterialStorage::InstanceShaderParam &E : plist) {
-		StringName name = E.info.name;
-		if (isparams.has(name)) {
-			if (isparams[name].info.type != E.info.type) {
-				WARN_PRINT("More than one material in instance export the same instance shader uniform '" + E.info.name + "', but they do it with different data types. Only the first one (in order) will display correctly.");
-			}
-			if (isparams[name].index != E.index) {
-				WARN_PRINT("More than one material in instance export the same instance shader uniform '" + E.info.name + "', but they do it with different indices. Only the first one (in order) will display correctly.");
-			}
-			continue; // The first one found always has priority.
-		}
-
-		Item::InstanceShaderParameter isp;
-		isp.index = E.index;
-		isp.info = E.info;
-		isp.default_value = E.default_value;
-		if (existing_isparams.has(name)) {
-			isp.value = existing_isparams[name].value;
-		} else {
-			isp.value = E.default_value;
-		}
-		isparams[name] = isp;
-	}
-}
-
-void RendererCanvasCull::instance_item_set_shader_parameter(RID p_item, const StringName &p_parameter, const Variant &p_value) {
+void RendererCanvasCull::canvas_item_set_instance_shader_parameter(RID p_item, const StringName &p_parameter, const Variant &p_value) {
 	Item *item = canvas_item_owner.get_or_null(p_item);
-	ERR_FAIL_COND(!item);
+	ERR_FAIL_NULL(item);
 
-	ERR_FAIL_COND(p_value.get_type() == Variant::OBJECT);
-
-	HashMap<StringName, Item::InstanceShaderParameter>::Iterator E = item->instance_shader_uniforms.find(p_parameter);
-
-	if (!E) {
-		Item::InstanceShaderParameter isp;
-		isp.index = -1;
-		isp.info = PropertyInfo();
-		isp.value = p_value;
-		item->instance_shader_uniforms[p_parameter] = isp;
-	} else {
-		E->value.value = p_value;
-		if (E->value.index >= 0 && item->instance_allocated_shader_uniforms) {
-			// Update directly.
-			RSG::material_storage->global_shader_parameters_instance_update(p_item, E->value.index, p_value);
-		}
-	}
+	item->instance_uniforms.set(item->self, p_parameter, p_value);
 }
 
-Variant RendererCanvasCull::instance_item_get_shader_parameter(RID p_instance, const StringName &p_parameter) const {
-	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_instance);
-	ERR_FAIL_COND_V(!item, Variant());
+Variant RendererCanvasCull::canvas_item_get_instance_shader_parameter(RID p_item, const StringName &p_parameter) const {
+	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_item);
+	ERR_FAIL_NULL_V(item, Variant());
 
-	if (item->instance_shader_uniforms.has(p_parameter)) {
-		return item->instance_shader_uniforms[p_parameter].value;
-	}
-	return Variant();
+	return item->instance_uniforms.get(p_parameter);
 }
 
-Variant RendererCanvasCull::instance_item_get_shader_parameter_default_value(RID p_instance, const StringName &p_parameter) const {
-	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_instance);
-	ERR_FAIL_COND_V(!item, Variant());
+Variant RendererCanvasCull::canvas_item_get_instance_shader_parameter_default_value(RID p_item, const StringName &p_parameter) const {
+	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_item);
+	ERR_FAIL_NULL_V(item, Variant());
 
-	if (item->instance_shader_uniforms.has(p_parameter)) {
-		return item->instance_shader_uniforms[p_parameter].default_value;
-	}
-	return Variant();
+	return item->instance_uniforms.get_default(p_parameter);
 }
 
-void RendererCanvasCull::instance_item_get_shader_parameter_list(RID p_instance, List<PropertyInfo> *p_parameters) const {
-	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_instance);
-	ERR_FAIL_COND(!item);
+void RendererCanvasCull::canvas_item_get_instance_shader_parameter_list(RID p_item, List<PropertyInfo> *p_parameters) const {
+	const Item *item = const_cast<RendererCanvasCull *>(this)->canvas_item_owner.get_or_null(p_item);
+	ERR_FAIL_NULL(item);
+	ERR_FAIL_NULL(p_parameters);
 
-	const_cast<RendererCanvasCull *>(this)->update_dirty_instances();
+	const_cast<RendererCanvasCull *>(this)->update_dirty_items();
 
-	Vector<StringName> names;
-	for (const KeyValue<StringName, Item::InstanceShaderParameter> &E : item->instance_shader_uniforms) {
-		names.push_back(E.key);
-	}
-	names.sort_custom<StringName::AlphCompare>();
-	for (int i = 0; i < names.size(); i++) {
-		PropertyInfo pinfo = item->instance_shader_uniforms[names[i]].info;
-		p_parameters->push_back(pinfo);
-	}
+	item->instance_uniforms.get_property_list(*p_parameters);
 }
 
 void RendererCanvasCull::canvas_item_set_visibility_notifier(RID p_item, bool p_enable, const Rect2 &p_area, const Callable &p_enter_callable, const Callable &p_exit_callable) {
@@ -2474,38 +2437,48 @@ Rect2 RendererCanvasCull::_debug_canvas_item_get_rect(RID p_item) {
 	return canvas_item->get_rect();
 }
 
-void RendererCanvasCull::update_dirty_instances() {
-	while (_instance_update_list.first()) {
-		Item *item = _instance_update_list.first()->self();
-
-		HashMap<StringName, Item::InstanceShaderParameter> isparams;
-		if (item->material.is_valid()) {
-			_update_instance_shader_uniforms_from_material(isparams, item->instance_shader_uniforms, item->material);
-		}
-		item->instance_shader_uniforms = isparams;
-
-		if (item->instance_allocated_shader_uniforms != (item->instance_shader_uniforms.size() > 0)) {
-			item->instance_allocated_shader_uniforms = (item->instance_shader_uniforms.size() > 0);
-			if (item->instance_allocated_shader_uniforms) {
-				item->instance_allocated_shader_uniforms_offset = RSG::material_storage->global_shader_parameters_instance_allocate(item->self);
-
-				for (const KeyValue<StringName, Item::InstanceShaderParameter> &E : item->instance_shader_uniforms) {
-					if (E.value.value.get_type() != Variant::NIL) {
-						RSG::material_storage->global_shader_parameters_instance_update(item->self, E.value.index, E.value.value);
-					}
-				}
-			} else {
-				RSG::material_storage->global_shader_parameters_instance_free(item->self);
-				item->instance_allocated_shader_uniforms_offset = -1;
-			}
-		}
-		_instance_update_list.remove(&item->update_item);
+void RendererCanvasCull::_item_queue_update(Item *p_item, bool p_update_dependencies) {
+	if (p_update_dependencies) {
+		p_item->update_dependencies = true;
 	}
+
+	if (!p_item->update_item.in_list()) {
+		_item_update_list.add(&p_item->update_item);
+	}
+}
+
+void RendererCanvasCull::update_dirty_items() {
+	while (_item_update_list.first()) {
+		_update_dirty_item(_item_update_list.first()->self());
+	}
+
+	// Instance updates may affect resources.
 	RSG::utilities->update_dirty_resources();
 }
 
+void RendererCanvasCull::_update_dirty_item(Item *p_item) {
+	if (p_item->update_dependencies) {
+		p_item->dependency_tracker.update_begin();
+
+		p_item->instance_uniforms.materials_start();
+
+		if (p_item->material.is_valid()) {
+			p_item->instance_uniforms.materials_append(p_item->material);
+			RSG::material_storage->material_update_dependency(p_item->material, &p_item->dependency_tracker);
+		}
+
+		if (p_item->instance_uniforms.materials_finish(p_item->self)) {
+			p_item->instance_allocated_shader_uniforms_offset = p_item->instance_uniforms.location();
+		}
+
+		p_item->dependency_tracker.update_end();
+	}
+	_item_update_list.remove(&p_item->update_item);
+	p_item->update_dependencies = false;
+}
+
 void RendererCanvasCull::update() {
-	update_dirty_instances();
+	update_dirty_items();
 }
 
 bool RendererCanvasCull::free(RID p_rid) {
@@ -2565,11 +2538,9 @@ bool RendererCanvasCull::free(RID p_rid) {
 			visibility_notifier_allocator.free(canvas_item->visibility_notifier);
 		}
 
-		/*
-		if (canvas_item->material) {
-			canvas_item->material->owners.erase(canvas_item);
-		}
-		*/
+		canvas_item_set_material(canvas_item->self, RID());
+		canvas_item->instance_uniforms.free(canvas_item->self);
+		update_dirty_items();
 
 		if (canvas_item->canvas_group != nullptr) {
 			memdelete(canvas_item->canvas_group);
@@ -2731,6 +2702,8 @@ void RendererCanvasCull::InterpolationData::notify_free_canvas_light_occluder(RI
 }
 
 RendererCanvasCull::RendererCanvasCull() {
+	_canvas_cull_singleton = this;
+
 	z_list = (RendererCanvasRender::Item **)memalloc(z_range * sizeof(RendererCanvasRender::Item *));
 	z_last_list = (RendererCanvasRender::Item **)memalloc(z_range * sizeof(RendererCanvasRender::Item *));
 
@@ -2743,4 +2716,5 @@ RendererCanvasCull::RendererCanvasCull() {
 RendererCanvasCull::~RendererCanvasCull() {
 	memfree(z_list);
 	memfree(z_last_list);
+	_canvas_cull_singleton = nullptr;
 }

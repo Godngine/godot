@@ -550,7 +550,7 @@ int CanvasItem::get_light_mask() const {
 	return light_mask;
 }
 
-const StringName *CanvasItem::_instance_shader_parameter_get_remap(const StringName p_name) const {
+const StringName *CanvasItem::_instance_shader_parameter_get_remap(const StringName &p_name) const {
 	StringName *r = instance_shader_parameter_property_remap.getptr(p_name);
 	if (!r) {
 		String s = p_name;
@@ -585,10 +585,10 @@ bool CanvasItem::_get(const StringName &p_name, Variant &r_ret) const {
 
 void CanvasItem::_get_property_list(List<PropertyInfo> *p_list) const {
 	List<PropertyInfo> pinfo;
-	RS::get_singleton()->instance_item_get_shader_parameter_list(get_canvas_item(), &pinfo);
+	RS::get_singleton()->canvas_item_get_instance_shader_parameter_list(get_canvas_item(), &pinfo);
 	for (PropertyInfo &pi : pinfo) {
 		bool has_def_value = false;
-		Variant def_value = RS::get_singleton()->instance_item_get_shader_parameter_default_value(get_canvas_item(), pi.name);
+		Variant def_value = RS::get_singleton()->canvas_item_get_instance_shader_parameter_default_value(get_canvas_item(), pi.name);
 		if (def_value.get_type() != Variant::NIL) {
 			has_def_value = true;
 		}
@@ -1135,22 +1135,22 @@ void CanvasItem::set_use_parent_material(bool p_use_parent_material) {
 
 void CanvasItem::set_instance_shader_parameter(const StringName &p_name, const Variant &p_value) {
 	if (p_value.get_type() == Variant::NIL) {
-		Variant def_value = RS::get_singleton()->instance_item_get_shader_parameter_default_value(get_canvas_item(), p_name);
-		RS::get_singleton()->instance_item_set_shader_parameter(get_canvas_item(), p_name, def_value);
+		Variant def_value = RS::get_singleton()->canvas_item_get_instance_shader_parameter_default_value(get_canvas_item(), p_name);
+		RS::get_singleton()->canvas_item_set_instance_shader_parameter(get_canvas_item(), p_name, def_value);
 		instance_shader_parameters.erase(p_value);
 	} else {
 		instance_shader_parameters[p_name] = p_value;
 		if (p_value.get_type() == Variant::OBJECT) {
 			RID tex_id = p_value;
-			RS::get_singleton()->instance_item_set_shader_parameter(get_canvas_item(), p_name, tex_id);
+			RS::get_singleton()->canvas_item_set_instance_shader_parameter(get_canvas_item(), p_name, tex_id);
 		} else {
-			RS::get_singleton()->instance_item_set_shader_parameter(get_canvas_item(), p_name, p_value);
+			RS::get_singleton()->canvas_item_set_instance_shader_parameter(get_canvas_item(), p_name, p_value);
 		}
 	}
 }
 
 Variant CanvasItem::get_instance_shader_parameter(const StringName &p_name) const {
-	return RS::get_singleton()->instance_item_get_shader_parameter(get_canvas_item(), p_name);
+	return RS::get_singleton()->canvas_item_get_instance_shader_parameter(get_canvas_item(), p_name);
 }
 
 bool CanvasItem::get_use_parent_material() const {
@@ -1314,6 +1314,9 @@ void CanvasItem::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_material", "material"), &CanvasItem::set_material);
 	ClassDB::bind_method(D_METHOD("get_material"), &CanvasItem::get_material);
+
+	ClassDB::bind_method(D_METHOD("set_instance_shader_parameter", "name", "value"), &CanvasItem::set_instance_shader_parameter);
+	ClassDB::bind_method(D_METHOD("get_instance_shader_parameter", "name"), &CanvasItem::get_instance_shader_parameter);
 
 	ClassDB::bind_method(D_METHOD("set_use_parent_material", "enable"), &CanvasItem::set_use_parent_material);
 	ClassDB::bind_method(D_METHOD("get_use_parent_material"), &CanvasItem::get_use_parent_material);

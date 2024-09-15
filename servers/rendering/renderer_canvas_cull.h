@@ -34,8 +34,12 @@
 #include "core/templates/paged_allocator.h"
 #include "renderer_compositor.h"
 #include "renderer_viewport.h"
+#include "servers/rendering/instance_uniforms.h"
 
 class RendererCanvasCull {
+	static void _dependency_changed(Dependency::DependencyChangedNotification p_notification, DependencyTracker *p_tracker);
+	static void _dependency_deleted(const RID &p_dependency, DependencyTracker *p_tracker);
+
 public:
 	struct Item : public RendererCanvasRender::Item {
 		RID parent; // canvas it belongs to
@@ -73,17 +77,11 @@ public:
 
 		VisibilityNotifierData *visibility_notifier = nullptr;
 
-		struct InstanceShaderParameter {
-			int32_t index = -1;
-			Variant value;
-			Variant default_value;
-			PropertyInfo info;
-		};
-
-		HashMap<StringName, InstanceShaderParameter> instance_shader_uniforms;
-		bool instance_allocated_shader_uniforms = false;
-		int32_t instance_allocated_shader_uniforms_offset = -1;
+		DependencyTracker dependency_tracker;
+		InstanceUniforms instance_uniforms;
 		SelfList<Item> update_item;
+
+		bool update_dependencies = false;
 
 		Item() :
 				update_item(this) {
@@ -101,10 +99,15 @@ public:
 			ysort_pos = Vector2();
 			ysort_index = 0;
 			ysort_parent_abs_z_index = 0;
+
+			dependency_tracker.userdata = this;
+			dependency_tracker.changed_callback = &RendererCanvasCull::_dependency_changed;
+			dependency_tracker.deleted_callback = &RendererCanvasCull::_dependency_deleted;
 		}
 	};
 
-	SelfList<Item>::List _instance_update_list;
+	void _item_queue_update(Item *p_item, bool p_update_dependencies);
+	SelfList<Item>::List _item_update_list;
 
 	struct ItemIndexSort {
 		_FORCE_INLINE_ bool operator()(const Item *p_left, const Item *p_right) const {
@@ -279,11 +282,10 @@ public:
 
 	void canvas_item_set_use_parent_material(RID p_item, bool p_enable);
 
-	void _update_instance_shader_uniforms_from_material(HashMap<StringName, Item::InstanceShaderParameter> &isparams, const HashMap<StringName, Item::InstanceShaderParameter> &existing_isparams, RID p_material);
-	void instance_item_set_shader_parameter(RID p_item, const StringName &p_parameter, const Variant &p_value);
-	void instance_item_get_shader_parameter_list(RID p_instance, List<PropertyInfo> *p_parameters) const;
-	Variant instance_item_get_shader_parameter(RID p_instance, const StringName &p_parameter) const;
-	Variant instance_item_get_shader_parameter_default_value(RID p_instance, const StringName &p_parameter) const;
+	void canvas_item_set_instance_shader_parameter(RID p_item, const StringName &p_parameter, const Variant &p_value);
+	void canvas_item_get_instance_shader_parameter_list(RID p_item, List<PropertyInfo> *p_parameters) const;
+	Variant canvas_item_get_instance_shader_parameter(RID p_item, const StringName &p_parameter) const;
+	Variant canvas_item_get_instance_shader_parameter_default_value(RID p_item, const StringName &p_parameter) const;
 
 	void canvas_item_set_visibility_notifier(RID p_item, bool p_enable, const Rect2 &p_area, const Callable &p_enter_callable, const Callable &p_exit_callable);
 
@@ -364,7 +366,9 @@ public:
 	void canvas_item_set_default_texture_repeat(RID p_item, RS::CanvasItemTextureRepeat p_repeat);
 
 	void update_visibility_notifiers();
-	void update_dirty_instances();
+	void update_dirty_items();
+
+	void _update_dirty_item(Item *p_item);
 
 	Rect2 _debug_canvas_item_get_rect(RID p_item);
 

@@ -152,7 +152,7 @@ private:
 	void _update_texture_filter_changed(bool p_propagate);
 
 	void _notify_transform_deferred();
-	const StringName *_instance_shader_parameter_get_remap(const StringName p_name) const;
+	const StringName *_instance_shader_parameter_get_remap(const StringName &p_name) const;
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);

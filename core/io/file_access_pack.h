@@ -69,6 +69,10 @@ public:
 		bool encrypted;
 	};
 
+	enum {
+		FILE_REMOVED_OFFSET = 0
+	};
+
 private:
 	struct PackedDir {
 		PackedDir *parent = nullptr;
@@ -111,6 +115,7 @@ private:
 public:
 	void add_pack_source(PackSource *p_source);
 	void add_path(const String &p_pkg_path, const String &p_path, uint64_t p_ofs, uint64_t p_size, const uint8_t *p_md5, PackSource *p_src, bool p_replace_files, bool p_encrypted = false); // for PackSource
+	void remove_path(const String &p_path); // for PackSource
 
 	void set_disabled(bool p_disabled) { disabled = p_disabled; }
 	_FORCE_INLINE_ bool is_disabled() const { return disabled; }
@@ -193,7 +198,7 @@ Ref<FileAccess> PackedData::try_open_path(const String &p_path) {
 	if (!E) {
 		return nullptr; //not found
 	}
-	if (E->value.offset == 0) {
+	if (E->value.offset == PackedData::FILE_REMOVED_OFFSET) {
 		return nullptr; //was erased
 	}
 

@@ -33,6 +33,13 @@
 				Adds the [param source_path] file to the current PCK package at the [param pck_path] internal path (should start with [code]res://[/code]).
 			</description>
 		</method>
+		<method name="add_file_removal">
+			<return type="int" enum="Error" />
+			<param index="0" name="pck_path" type="String" />
+			<description>
+				Addition a file removal to the PCK. This is used for PCK diffing. If this file has been loaded from a previous PCK, it will be removed.
+			</description>
+		</method>
 		<method name="flush">
 			<return type="int" enum="Error" />
 			<param index="0" name="verbose" type="bool" default="false" />

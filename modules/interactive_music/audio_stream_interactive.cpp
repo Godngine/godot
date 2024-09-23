@@ -1025,7 +1025,14 @@ bool AudioStreamPlaybackInteractive::is_playing() const {
 	return active;
 }
 
+int AudioStreamPlaybackInteractive::get_playback_current() const {
+	return playback_current;
+}
+
 void AudioStreamPlaybackInteractive::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("switch_to_clip_by_name", "clip_name"), &AudioStreamPlaybackInteractive::switch_to_clip_by_name);
 	ClassDB::bind_method(D_METHOD("switch_to_clip", "clip_index"), &AudioStreamPlaybackInteractive::switch_to_clip);
+	ClassDB::bind_method(D_METHOD("get_playback_current"), &AudioStreamPlaybackInteractive::get_playback_current);
+
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "playback_current"), "", "get_playback_current");
 }

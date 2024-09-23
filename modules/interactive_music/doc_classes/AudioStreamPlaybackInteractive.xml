@@ -24,4 +24,9 @@
 			</description>
 		</method>
 	</methods>
+	<members>
+		<member name="playback_current" type="int" setter="" getter="get_playback_current">
+			The clip that is currently played
+		</member>
+	</members>
 </class>

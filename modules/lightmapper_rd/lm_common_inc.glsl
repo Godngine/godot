@@ -18,6 +18,9 @@ layout(set = 0, binding = 0) uniform BakeParameters {
 	uint bounces;
 
 	float bounce_indirect_energy;
+	int shadowmask_light_idx;
+	uint pad0;
+	uint pad1;
 }
 bake_params;
 

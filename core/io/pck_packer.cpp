@@ -49,6 +49,7 @@ static int _get_pad(int p_alignment, int p_n) {
 void PCKPacker::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("pck_start", "pck_path", "alignment", "key", "encrypt_directory"), &PCKPacker::pck_start, DEFVAL(32), DEFVAL("0000000000000000000000000000000000000000000000000000000000000000"), DEFVAL(false));
 	ClassDB::bind_method(D_METHOD("add_file", "pck_path", "source_path", "encrypt"), &PCKPacker::add_file, DEFVAL(false));
+	ClassDB::bind_method(D_METHOD("add_file_removal", "pck_path"), &PCKPacker::add_file_removal);
 	ClassDB::bind_method(D_METHOD("flush", "verbose"), &PCKPacker::flush, DEFVAL(false));
 }
 
@@ -102,6 +103,24 @@ Error PCKPacker::pck_start(const String &p_pck_path, int p_alignment, const Stri
 
 	files.clear();
 	ofs = 0;
+
+	return OK;
+}
+
+Error PCKPacker::add_file_removal(const String &p_pck_path) {
+	ERR_FAIL_COND_V_MSG(file.is_null(), ERR_INVALID_PARAMETER, "File must be opened before use.");
+
+	File pf;
+	// Simplify path here and on every 'files' access so that paths that have extra '/'
+	// symbols in them still match to the MD5 hash for the saved path.
+	pf.path = p_pck_path.simplify_path();
+	pf.ofs = 0;
+	pf.size = 0;
+	for (int i = 0; i < 16; i++) {
+		pf.md5.push_back(0);
+	}
+
+	files.push_back(pf);
 
 	return OK;
 }
@@ -218,6 +237,10 @@ Error PCKPacker::flush(bool p_verbose) {
 
 	int count = 0;
 	for (int i = 0; i < files.size(); i++) {
+		if (files[i].ofs == 0 && files[i].size == 0 && files[i].src_path == String()) {
+			continue;
+		}
+
 		Ref<FileAccess> src = FileAccess::open(files[i].src_path, FileAccess::READ);
 		uint64_t to_write = files[i].size;
 

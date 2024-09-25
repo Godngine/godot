@@ -96,6 +96,41 @@ void PackedData::add_path(const String &p_pkg_path, const String &p_path, uint64
 	}
 }
 
+void PackedData::remove_path(const String &p_path) {
+	String simplified_path = p_path.simplify_path();
+	PathMD5 pmd5(simplified_path.md5_buffer());
+
+	bool exists = files.has(pmd5);
+
+	if (!exists) {
+		// Do not remove something that does not exist.
+		return;
+	}
+
+	//search for dir
+	String p = simplified_path.replace_first("res://", "");
+	PackedDir *cd = root;
+
+	if (p.contains("/")) { //in a subdir
+
+		Vector<String> ds = p.get_base_dir().split("/");
+
+		for (int j = 0; j < ds.size(); j++) {
+			if (!cd->subdirs.has(ds[j])) {
+				return; // Subdir does not exist, do not bother creating
+			} else {
+				cd = cd->subdirs[ds[j]];
+			}
+		}
+	}
+	String filename = simplified_path.get_file();
+	cd->files.erase(filename);
+
+	// erase file
+
+	files.erase(pmd5);
+}
+
 void PackedData::add_pack_source(PackSource *p_source) {
 	if (p_source != nullptr) {
 		sources.push_back(p_source);
@@ -259,7 +294,11 @@ bool PackedSourcePCK::try_open_pack(const String &p_path, bool p_replace_files, 
 		f->get_buffer(md5, 16);
 		uint32_t flags = f->get_32();
 
-		PackedData::get_singleton()->add_path(p_path, path, ofs + p_offset, size, md5, this, p_replace_files, (flags & PACK_FILE_ENCRYPTED));
+		if (ofs == PackedData::FILE_REMOVED_OFFSET) { // The file was removed
+			PackedData::get_singleton()->remove_path(path);
+		} else {
+			PackedData::get_singleton()->add_path(p_path, path, ofs + p_offset, size, md5, this, p_replace_files, (flags & PACK_FILE_ENCRYPTED));
+		}
 	}
 
 	return true;

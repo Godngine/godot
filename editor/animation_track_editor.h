@@ -606,6 +606,9 @@ class AnimationTrackEditor : public VBoxContainer {
 
 	void _anim_paste_keys(float p_ofs, bool p_ofs_valid, int p_track);
 
+	void _toggle_function_name();
+	Button *function_name_toggler = nullptr;
+
 	void _view_group_toggle();
 	Button *view_group = nullptr;
 	Button *selected_filter = nullptr;
@@ -743,6 +746,7 @@ public:
 	float get_moving_selection_offset() const;
 	float snap_time(float p_value, bool p_relative = false);
 	bool is_grouping_tracks();
+	bool is_function_name_pressed();
 
 	/** If `p_from_mouse_event` is `true`, handle Shift key presses for precise snapping. */
 	void goto_prev_step(bool p_from_mouse_event);

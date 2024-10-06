@@ -4156,6 +4156,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 	scripts_vbox->add_child(script_list);
 	script_list->set_custom_minimum_size(Size2(100, 60) * EDSCALE); //need to give a bit of limit to avoid it from disappearing
 	script_list->set_v_size_flags(SIZE_EXPAND_FILL);
+	script_list->set_theme_type_variation("SideItemList");
 	script_split->set_split_offset(200 * EDSCALE);
 	_sort_list_on_update = true;
 	script_list->connect("item_clicked", callable_mp(this, &ScriptEditor::_script_list_clicked), CONNECT_DEFERRED);
@@ -4199,6 +4200,7 @@ ScriptEditor::ScriptEditor(WindowWrapper *p_wrapper) {
 
 	members_overview = memnew(ItemList);
 	members_overview->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
+	members_overview->set_theme_type_variation("SideItemList");
 	overview_vbox->add_child(members_overview);
 
 	members_overview->set_allow_reselect(true);

@@ -199,6 +199,7 @@ class SceneTreeDialog : public ConfirmationDialog {
 	LineEdit *filter = nullptr;
 	CheckButton *show_all_nodes = nullptr;
 	LocalVector<TextureRect *> valid_type_icons;
+	HBoxContainer *allowed_types_hbox = nullptr;
 
 	void _select();
 	void _cancel();

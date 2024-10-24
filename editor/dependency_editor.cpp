@@ -492,6 +492,7 @@ void DependencyRemoveDialog::_find_localization_remaps_of_removed_files(Vector<R
 void DependencyRemoveDialog::_build_removed_dependency_tree(const Vector<RemovedDependency> &p_removed) {
 	owners->clear();
 	owners->create_item(); // root
+	int tree_item_count = 0;
 
 	HashMap<String, TreeItem *> tree_items;
 	for (int i = 0; i < p_removed.size(); i++) {
@@ -506,16 +507,19 @@ void DependencyRemoveDialog::_build_removed_dependency_tree(const Vector<Removed
 					folder_item->set_text(0, rd.dependency_folder);
 					folder_item->set_icon(0, owners->get_editor_theme_icon(SNAME("Folder")));
 					tree_items[rd.dependency_folder] = folder_item;
+					tree_item_count++;
 				}
 				TreeItem *dependency_item = owners->create_item(tree_items[rd.dependency_folder]);
 				dependency_item->set_text(0, rd.dependency);
 				dependency_item->set_icon(0, owners->get_editor_theme_icon(SNAME("Warning")));
 				tree_items[rd.dependency] = dependency_item;
+				tree_item_count++;
 			} else {
 				TreeItem *dependency_item = owners->create_item(owners->get_root());
 				dependency_item->set_text(0, rd.dependency);
 				dependency_item->set_icon(0, owners->get_editor_theme_icon(SNAME("Warning")));
 				tree_items[rd.dependency] = dependency_item;
+				tree_item_count++;
 			}
 		}
 
@@ -524,7 +528,30 @@ void DependencyRemoveDialog::_build_removed_dependency_tree(const Vector<Removed
 		TreeItem *file_item = owners->create_item(tree_items[rd.dependency]);
 		file_item->set_text(0, rd.file);
 		file_item->set_icon(0, icon);
+		tree_item_count++;
 	}
+
+	if (tree_item_count > 0) {
+		const uint32_t multiplier = MIN(tree_item_count, 5);
+		owners->set_custom_minimum_size(Size2(0, 35 * multiplier) * EDSCALE);
+	}
+}
+
+void DependencyRemoveDialog::_show_files_to_delete_list() {
+	files_to_delete_list->clear();
+
+	for (const String &s : dirs_to_delete) {
+		String t = s.trim_prefix("res://");
+		files_to_delete_list->add_item(t, Ref<Texture2D>(), false);
+	}
+
+	for (const String &s : files_to_delete) {
+		String t = s.trim_prefix("res://");
+		files_to_delete_list->add_item(t, Ref<Texture2D>(), false);
+	}
+
+	const int multiplier = MIN(files_to_delete_list->get_item_count(), 5);
+	files_to_delete_list->set_custom_minimum_size(Size2(0, 35 * multiplier) * EDSCALE);
 }
 
 void DependencyRemoveDialog::show(const Vector<String> &p_folders, const Vector<String> &p_files) {
@@ -543,6 +570,8 @@ void DependencyRemoveDialog::show(const Vector<String> &p_folders, const Vector<
 		files_to_delete.push_back(p_files[i]);
 	}
 
+	_show_files_to_delete_list();
+
 	Vector<RemovedDependency> removed_deps;
 	_find_all_removed_dependencies(EditorFileSystem::get_singleton()->get_filesystem(), removed_deps);
 	_find_localization_remaps_of_removed_files(removed_deps);
@@ -558,6 +587,7 @@ void DependencyRemoveDialog::show(const Vector<String> &p_folders, const Vector<
 		text->set_text(TTR("The files being removed are required by other resources in order for them to work.\nRemove them anyway? (Cannot be undone.)\nDepending on your filesystem configuration, the files will either be moved to the system trash or deleted permanently."));
 		popup_centered(Size2(500, 350));
 	}
+
 	EditorFileSystem::get_singleton()->scan_changes();
 }
 
@@ -666,10 +696,21 @@ DependencyRemoveDialog::DependencyRemoveDialog() {
 	set_ok_button_text(TTR("Remove"));
 
 	VBoxContainer *vb = memnew(VBoxContainer);
+	vb->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	add_child(vb);
 
 	text = memnew(Label);
 	vb->add_child(text);
+
+	Label *files_to_delete_label = memnew(Label);
+	files_to_delete_label->set_theme_type_variation("HeaderSmall");
+	files_to_delete_label->set_text(TTR("Files to be deleted:"));
+	vb->add_child(files_to_delete_label);
+
+	files_to_delete_list = memnew(ItemList);
+	files_to_delete_list->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	files_to_delete_list->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	vb->add_child(files_to_delete_list);
 
 	owners = memnew(Tree);
 	owners->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);

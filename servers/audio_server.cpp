@@ -1469,7 +1469,7 @@ void AudioServer::init_channels_and_buffers() {
 }
 
 void AudioServer::init() {
-	channel_disable_threshold_db = GLOBAL_DEF_RST("audio/buses/channel_disable_threshold_db", -60.0);
+	channel_disable_threshold_db = GLOBAL_DEF_RST(PropertyInfo(Variant::FLOAT, "audio/buses/channel_disable_threshold_db", PROPERTY_HINT_RANGE, "-80,0,0.1,suffix:dB"), -60.0);
 	channel_disable_frames = float(GLOBAL_DEF_RST(PropertyInfo(Variant::FLOAT, "audio/buses/channel_disable_time", PROPERTY_HINT_RANGE, "0,5,0.01,or_greater"), 2.0)) * get_mix_rate();
 	buffer_size = 512; //hardcoded for now
 
@@ -1488,7 +1488,7 @@ void AudioServer::init() {
 	set_edited(false); //avoid editors from thinking this was edited
 #endif
 
-	GLOBAL_DEF_RST("audio/video/video_delay_compensation_ms", 0);
+	GLOBAL_DEF_RST(PropertyInfo(Variant::INT, "audio/video/video_delay_compensation_ms", PROPERTY_HINT_RANGE, "-1000,1000,1,suffix:ms"), 0);
 }
 
 void AudioServer::update() {

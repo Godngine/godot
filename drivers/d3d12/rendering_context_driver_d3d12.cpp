@@ -99,7 +99,7 @@ RenderingContextDriverD3D12::~RenderingContextDriverD3D12() {
 }
 
 Error RenderingContextDriverD3D12::_init_device_factory() {
-	uint32_t agility_sdk_version = GLOBAL_GET("rendering/rendering_device/d3d12/agility_sdk_version");
+	uint32_t agility_sdk_version = GLOBAL_GET(PropertyInfo(Variant::INT, "rendering/rendering_device/d3d12/agility_sdk_version", "1,10000,1,or_greater");
 	String agility_sdk_path = String(".\\") + Engine::get_singleton()->get_architecture_name();
 
 	lib_d3d12 = LoadLibraryW(L"D3D12.dll");

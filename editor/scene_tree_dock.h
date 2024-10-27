@@ -33,6 +33,7 @@
 
 #include "editor/gui/scene_tree_editor.h"
 #include "editor/script_create_dialog.h"
+#include "editor_undo_redo_manager.h"
 #include "scene/gui/box_container.h"
 #include "scene/resources/animation.h"
 
@@ -89,6 +90,7 @@ class SceneTreeDock : public VBoxContainer {
 		TOOL_SCENE_CLEAR_INHERITANCE_CONFIRM,
 		TOOL_SCENE_OPEN_INHERITED,
 		TOOL_TOGGLE_SCENE_UNIQUE_NAME,
+		TOOL_TOGGLE_SCENE_EXPOSE_NODE,
 		TOOL_CREATE_2D_SCENE,
 		TOOL_CREATE_3D_SCENE,
 		TOOL_CREATE_USER_INTERFACE,
@@ -156,6 +158,7 @@ class SceneTreeDock : public VBoxContainer {
 	Label *delete_dialog_label = nullptr;
 	CheckBox *delete_tracks_checkbox = nullptr;
 	ConfirmationDialog *editable_instance_remove_dialog = nullptr;
+	ConfirmationDialog *revoke_node_exposure_dialog = nullptr;
 	ConfirmationDialog *placeholder_editable_instance_remove_dialog = nullptr;
 
 	ReparentDialog *reparent_dialog = nullptr;

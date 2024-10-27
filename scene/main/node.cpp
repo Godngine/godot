@@ -2156,6 +2156,24 @@ bool Node::is_unique_name_in_owner() const {
 	return data.unique_name_in_owner;
 }
 
+void Node::set_exposed_in_scene(bool p_enabled) {
+	ERR_MAIN_THREAD_GUARD
+	if (data.exposed_in_scene == p_enabled) {
+		return;
+	}
+	data.exposed_in_scene = p_enabled;
+	update_configuration_warnings();
+}
+
+void Node::set_exposed_in_owner(bool p_enabled) {
+	ERR_MAIN_THREAD_GUARD
+	if (data.exposed_in_owner == p_enabled) {
+		return;
+	}
+	data.exposed_in_owner = p_enabled;
+	update_configuration_warnings();
+}
+
 void Node::set_owner(Node *p_owner) {
 	ERR_MAIN_THREAD_GUARD
 	if (data.owner) {
@@ -2232,6 +2250,54 @@ Node *Node::find_common_parent_with(const Node *p_node) const {
 	}
 
 	return const_cast<Node *>(common_parent);
+}
+
+NodePath Node::get_unique_path_to(const Node *p_node) const {
+	ERR_FAIL_NULL_V(p_node, NodePath());
+
+	if (this == p_node) {
+		return NodePath(".");
+	}
+
+	HashSet<const Node *> visited;
+
+	const Node *n = this;
+
+	while (n) {
+		visited.insert(n);
+		n = n->data.parent;
+	}
+
+	const Node *common_parent = p_node;
+
+	while (common_parent) {
+		if (visited.has(common_parent)) {
+			break;
+		}
+		common_parent = common_parent->data.parent;
+	}
+
+	ERR_FAIL_NULL_V(common_parent, NodePath()); //nodes not in the same tree
+
+	visited.clear();
+
+	Vector<StringName> path;
+	StringName up = String("..");
+
+	n = p_node;
+
+	while (n != common_parent) {
+		if (n->get_owner()->is_exposed_in_owner(n) || n->get_owner()->is_exposed_in_scene(n)) {
+			path.push_back(UNIQUE_NODE_PREFIX + String(n->get_name()));
+			n = n->data.owner;
+		} else {
+			path.push_back(n->get_name());
+			n = n->data.parent;
+		}
+	}
+	path.reverse();
+
+	return NodePath(path, false);
 }
 
 NodePath Node::get_path_to(const Node *p_node, bool p_use_unique_path) const {
@@ -2606,6 +2672,39 @@ Node *Node::get_deepest_editable_node(Node *p_start_node) const {
 	}
 
 	return node;
+}
+
+bool Node::is_exposed_in_owner(const Node *p_node) const {
+	if (!p_node) {
+		return false; // Easier, null is never editable. :)
+	}
+	ERR_FAIL_COND_V(!is_ancestor_of(p_node), false);
+	return p_node->data.exposed_in_owner;
+}
+bool Node::is_exposed_in_scene(const Node *p_node) const {
+	if (!p_node) {
+		return false; // Easier, null is never editable. :)
+	}
+	ERR_FAIL_COND_V(!is_ancestor_of(p_node), false);
+	return p_node->data.exposed_in_scene;
+}
+
+bool Node::has_exposed_nodes() const {
+	_update_children_cache();
+	Node *const *cptr = data.children_cache.ptr();
+	int ccount = data.children_cache.size();
+	for (int i = 0; i < ccount; i++) {
+		if (!cptr[i]->data.owner) {
+			continue;
+		}
+		if (cptr[i]->data.exposed_in_owner) {
+			return true;
+		}
+		if (cptr[i]->has_exposed_nodes()) {
+			return true;
+		}
+	}
+	return false;
 }
 
 #ifdef TOOLS_ENABLED
@@ -3670,6 +3769,8 @@ void Node::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_scene_instance_load_placeholder"), &Node::get_scene_instance_load_placeholder);
 	ClassDB::bind_method(D_METHOD("set_editable_instance", "node", "is_editable"), &Node::set_editable_instance);
 	ClassDB::bind_method(D_METHOD("is_editable_instance", "node"), &Node::is_editable_instance);
+	ClassDB::bind_method(D_METHOD("is_exposed_in_owner", "node"), &Node::is_exposed_in_owner);
+	ClassDB::bind_method(D_METHOD("is_exposed_in_scene", "node"), &Node::is_exposed_in_scene);
 
 	ClassDB::bind_method(D_METHOD("get_viewport"), &Node::get_viewport);
 
@@ -3695,6 +3796,10 @@ void Node::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_unique_name_in_owner", "enable"), &Node::set_unique_name_in_owner);
 	ClassDB::bind_method(D_METHOD("is_unique_name_in_owner"), &Node::is_unique_name_in_owner);
+
+	ClassDB::bind_method(D_METHOD("set_exposed_in_owner", "enable"), &Node::set_exposed_in_owner);
+
+	ClassDB::bind_method(D_METHOD("set_exposed_in_scene", "enable"), &Node::set_exposed_in_scene);
 
 	ClassDB::bind_method(D_METHOD("atr", "message", "context"), &Node::atr, DEFVAL(""));
 	ClassDB::bind_method(D_METHOD("atr_n", "message", "plural_message", "n", "context"), &Node::atr_n, DEFVAL(""));
@@ -3911,6 +4016,8 @@ Node::Node() {
 
 	data.display_folded = false;
 	data.editable_instance = false;
+	data.exposed_in_scene = false;
+	data.exposed_in_owner = false;
 
 	data.inside_tree = false;
 	data.ready_notified = false; // This is a small hack, so if a node is added during _ready() to the tree, it correctly gets the _ready() notification.

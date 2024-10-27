@@ -246,6 +246,8 @@ private:
 
 		bool display_folded : 1;
 		bool editable_instance : 1;
+		bool exposed_in_scene : 1;
+		bool exposed_in_owner : 1;
 
 		bool inside_tree : 1;
 		bool ready_notified : 1;
@@ -484,6 +486,7 @@ public:
 	NodePath get_path() const;
 	NodePath get_path_to(const Node *p_node, bool p_use_unique_path = false) const;
 	Node *find_common_parent_with(const Node *p_node) const;
+	NodePath get_unique_path_to(const Node *p_node) const;
 
 	void add_to_group(const StringName &p_identifier, bool p_persistent = false);
 	void remove_from_group(const StringName &p_identifier);
@@ -506,6 +509,8 @@ public:
 
 	void set_unique_name_in_owner(bool p_enabled);
 	bool is_unique_name_in_owner() const;
+	void set_exposed_in_scene(bool p_enabled);
+	void set_exposed_in_owner(bool p_enabled);
 
 	_FORCE_INLINE_ int get_index(bool p_include_internal = true) const {
 		// p_include_internal = false doesn't make sense if the node is internal.
@@ -549,6 +554,9 @@ public:
 	void set_editable_instance(Node *p_node, bool p_editable);
 	bool is_editable_instance(const Node *p_node) const;
 	Node *get_deepest_editable_node(Node *p_start_node) const;
+	bool is_exposed_in_owner(const Node *p_node) const;
+	bool is_exposed_in_scene(const Node *p_node) const;
+	bool has_exposed_nodes() const;
 
 #ifdef TOOLS_ENABLED
 	void set_property_pinned(const String &p_property, bool p_pinned);

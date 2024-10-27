@@ -471,7 +471,7 @@
 		<member name="debug/gdscript/warnings/accessing_underline_prefixed_member" type="int" setter="" getter="" default="1">
 			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]_[/code]-prefixed member that is not declared in the current class is accessed.
 			This discards the existence of the member, especially when this comes to an attribute.
-+		</member>
+		</member>
 		<member name="debug/gdscript/warnings/assert_always_false" type="int" setter="" getter="" default="1">
 			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]assert[/code] call always evaluates to false.
 		</member>
@@ -479,7 +479,7 @@
 			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]assert[/code] call always evaluates to true.
 		</member>
 		<member name="debug/gdscript/warnings/calling_underline_prefixed_method" type="int" setter="" getter="" default="1">
-+			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]_[/code]-prefixed method that is not declared in the current class is called.
+			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]_[/code]-prefixed method that is not declared in the current class is called.
 			This discards the existence of the method, especially when this comes to an attribute.
 		</member>
 		<member name="debug/gdscript/warnings/confusable_capture_reassignment" type="int" setter="" getter="" default="1">

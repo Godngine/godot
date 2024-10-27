@@ -21,6 +21,7 @@
 			<param index="0" name="from" type="Plane" />
 			<description>
 				Constructs a [Plane] as a copy of the given [Plane].
+				[b]Note:[/b] Not available in C#.
 			</description>
 		</constructor>
 		<constructor name="Plane">

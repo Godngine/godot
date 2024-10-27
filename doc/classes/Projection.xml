@@ -22,6 +22,7 @@
 			<param index="0" name="from" type="Projection" />
 			<description>
 				Constructs a [Projection] as a copy of the given [Projection].
+				[b]Note:[/b] Not available in C#.
 			</description>
 		</constructor>
 		<constructor name="Projection">

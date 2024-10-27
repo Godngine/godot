@@ -1,4 +1,140 @@
 GDTEST_OK
+>> WARNING
+>> Line: 30
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 32
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 34
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 35
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 36
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 38
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 39
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 40
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 45
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 46
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 47
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 49
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 50
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 51
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 53
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 54
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 55
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 57
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 82
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 83
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 85
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 86
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 88
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 89
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 91
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 92
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 98
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 99
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 101
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 102
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 104
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 105
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 107
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
+>> WARNING
+>> Line: 108
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_d" prefixed with "_", which would be a private member.
 Outer
 1
 1

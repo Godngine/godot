@@ -324,6 +324,7 @@ void GDScriptAnalyzer::get_class_node_current_scope_classes(GDScriptParser::Clas
 void GDScriptAnalyzer::check_access_private_member(GDScriptParser::IdentifierNode *p_identifier, const bool p_is_call) {
 	if (p_identifier == nullptr) {
 		return;
+	}	if (p_identifier->suite) {
 	}
 	if (!String(p_identifier->name).begins_with("_")) {
 		return;

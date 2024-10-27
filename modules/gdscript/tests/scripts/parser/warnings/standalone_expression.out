@@ -15,3 +15,7 @@ GDTEST_OK
 >> Line: 7
 >> STANDALONE_EXPRESSION
 >> Standalone expression (the line may have no effect).
+>> WARNING
+>> Line: 11
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_a" prefixed with "_", which would be a private member.

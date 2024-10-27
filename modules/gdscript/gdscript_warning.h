@@ -92,7 +92,7 @@ public:
 		GET_NODE_DEFAULT_WITHOUT_ONREADY, // A class variable uses `get_node()` (or the `$` notation) as its default value, but does not use the @onready annotation.
 		ONREADY_WITH_EXPORT, // The `@onready` annotation will set the value after `@export` which is likely not intended.
 		ACCESSING_UNDERLINE_PREFIXED_MEMBER, // A member prefixed with `_` is being accessed, whether the member exists or not.
-		CALLING_UNDERLINE_PREFIXED_METHOD, // A method prefixed with `_` is being called, whether the method exists or not. Will not thrown if the method is moditied by `@virtual`.
+		CALLING_UNDERLINE_PREFIXED_METHOD, // A method prefixed with `_` is being called, whether the method exists or not.
 #ifndef DISABLE_DEPRECATED
 		PROPERTY_USED_AS_FUNCTION, // Function not found, but there's a property with the same name.
 		CONSTANT_USED_AS_FUNCTION, // Function not found, but there's a constant with the same name.

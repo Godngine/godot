@@ -1,3 +1,7 @@
 GDTEST_OK
+>> WARNING
+>> Line: 17
+>> ACCESSING_UNDERLINE_PREFIXED_MEMBER
+>> Trying accessing the member "_ready" prefixed with "_", which would be a private member.
 a
 b

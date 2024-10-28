@@ -95,3 +95,10 @@ Validate extension JSON: Error: Field 'classes/InputMap/methods/add_action/argum
 
 Default deadzone value was changed. No adjustments should be necessary.
 Compatibility method registered.
+
+GH-98566
+--------
+Validate extension JSON: API was removed: classes/VisualShader/methods/set_graph_offset
+Validate extension JSON: API was removed: classes/VisualShader/methods/get_graph_offset
+
+The graph_offset property was removed from the resource. This information is now stored as project metadata.

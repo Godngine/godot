@@ -1,4 +1,8 @@
 GDTEST_OK
+>> WARNING
+>> Line: 45
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_on_some_signal" in an external class.
 <null>
 <null>
 <null>

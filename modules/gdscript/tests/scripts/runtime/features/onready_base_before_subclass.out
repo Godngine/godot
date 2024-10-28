@@ -1,3 +1,7 @@
 GDTEST_OK
+>> WARNING
+>> Line: 17
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_ready" in an external class.
 a
 b

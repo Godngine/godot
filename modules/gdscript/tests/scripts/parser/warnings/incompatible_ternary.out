@@ -3,3 +3,7 @@ GDTEST_OK
 >> Line: 8
 >> INCOMPATIBLE_TERNARY
 >> Values of the ternary operator are not mutually compatible.
+>> WARNING
+>> Line: 8
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.

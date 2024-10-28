@@ -15,3 +15,7 @@ GDTEST_OK
 >> Line: 7
 >> STANDALONE_EXPRESSION
 >> Standalone expression (the line may have no effect).
+>> WARNING
+>> Line: 11
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_a" in an external class.

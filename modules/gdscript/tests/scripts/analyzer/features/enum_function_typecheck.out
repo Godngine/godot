@@ -1,4 +1,140 @@
 GDTEST_OK
+>> WARNING
+>> Line: 30
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 32
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 34
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 35
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 36
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 38
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 39
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 40
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 45
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 46
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 47
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 49
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 50
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 51
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 53
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 54
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 55
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 57
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 82
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 83
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 85
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 86
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 88
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 89
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 91
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 92
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 98
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 99
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 101
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 102
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 104
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 105
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 107
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
+>> WARNING
+>> Line: 108
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_d" in an external class.
 Outer
 1
 1

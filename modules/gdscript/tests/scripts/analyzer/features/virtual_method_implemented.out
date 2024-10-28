@@ -1,3 +1,11 @@
 GDTEST_OK
+>> WARNING
+>> Line: 19
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_get_property_list" in an external class.
+>> WARNING
+>> Line: 21
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_get_property_list" in an external class.
 { "property": "definition" }
 { "property": "definition", "new": "new" }

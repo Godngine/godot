@@ -339,6 +339,7 @@ public:
 		};
 
 		Type type = NONE;
+
 		int start_line = 0, end_line = 0;
 		int start_column = 0, end_column = 0;
 		int leftmost_column = 0, rightmost_column = 0;
@@ -885,6 +886,12 @@ public:
 		StringName name;
 		SuiteNode *suite = nullptr; // The block in which the identifier is used.
 
+		enum NamePrefixUnderlineStatus {
+			UNDERLINE_NORMAL_MARK,
+			UNDERLINE_MARKED_AS_PRIVATE,
+			UNDERLINE_ERROR,
+		};
+
 		enum Source {
 			UNDEFINED_SOURCE,
 			FUNCTION_PARAMETER,
@@ -915,6 +922,17 @@ public:
 		FunctionNode *source_function = nullptr; // TODO: Rename to disambiguate `function_source`.
 
 		int usages = 0; // Useful for binds/iterator variable.
+
+		NamePrefixUnderlineStatus get_name_prefixed_with_underlines_status() const {
+			ERR_FAIL_COND_V_MSG(name.is_empty(), NamePrefixUnderlineStatus::UNDERLINE_ERROR, R"(The name is empty, returns error value.)");
+
+			String string_named = String(name);
+			if (string_named.begins_with("_")) {
+				return NamePrefixUnderlineStatus::UNDERLINE_MARKED_AS_PRIVATE;
+			}
+
+			return NamePrefixUnderlineStatus::UNDERLINE_NORMAL_MARK;
+		}
 
 		IdentifierNode() {
 			type = IDENTIFIER;

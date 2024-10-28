@@ -3,3 +3,23 @@ GDTEST_OK
 >> Line: 3
 >> INTEGER_DIVISION
 >> Integer division, decimal part will be discarded.
+>> WARNING
+>> Line: 6
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
+>> WARNING
+>> Line: 7
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
+>> WARNING
+>> Line: 8
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
+>> WARNING
+>> Line: 9
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
+>> WARNING
+>> Line: 10
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.

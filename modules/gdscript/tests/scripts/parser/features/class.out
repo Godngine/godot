@@ -1,3 +1,7 @@
 GDTEST_OK
+>> WARNING
+>> Line: 25
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_test_constructor" in an external class.
 constructor with argument 10
 constructor with argument 500

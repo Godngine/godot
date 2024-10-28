@@ -1,4 +1,24 @@
 GDTEST_OK
+>> WARNING
+>> Line: 56
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_v" in an external class.
+>> WARNING
+>> Line: 57
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_v" in an external class.
+>> WARNING
+>> Line: 58
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_v" in an external class.
+>> WARNING
+>> Line: 60
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_v" in an external class.
+>> WARNING
+>> Line: 61
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_v" in an external class.
 1
 
 3

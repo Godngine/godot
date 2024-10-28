@@ -1693,7 +1693,7 @@ void EditorExportPlatformAndroid::load_icon_refs(const Ref<EditorExportPreset> &
 	path = static_cast<String>(p_preset->get(launcher_adaptive_icon_monochrome_option)).strip_edges();
 	if (!path.is_empty()) {
 		print_verbose("Loading adaptive monochrome icon from " + path);
-		ImageLoader::load_image(path, background);
+		ImageLoader::load_image(path, monochrome);
 	}
 }
 

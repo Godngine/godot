@@ -477,7 +477,7 @@
 		<member name="debug/gdscript/warnings/assert_always_true" type="int" setter="" getter="" default="1">
 			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]assert[/code] call always evaluates to true.
 		</member>
-		<member name="debug/gdscript/warnings/calling_private_member" type="int" setter="" getter="" default="1">
+		<member name="debug/gdscript/warnings/calling_private_method" type="int" setter="" getter="" default="1">
 			When set to [code]warn[/code] or [code]error[/code], produces a warning or an error respectively when an [code]_[/code]-prefixed method is called, which is not declared in the current class or any of its super classes.
 		</member>
 		<member name="debug/gdscript/warnings/confusable_capture_reassignment" type="int" setter="" getter="" default="1">

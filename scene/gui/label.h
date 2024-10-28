@@ -91,11 +91,22 @@ private:
 		int font_shadow_outline_size;
 	} theme_cache;
 
+	void _ensure_shaped() const;
 	void _update_visible();
 	void _shape();
 	void _invalidate();
 
 protected:
+	struct LayoutData {
+		Vector2 offset;
+		int line_limit = 0;
+		int line_spacing = 0;
+	};
+
+	RID get_line_rid(int p_line) const;
+	Rect2 get_line_rect(int p_line) const;
+	Label::LayoutData get_layout_data() const;
+
 	void _notification(int p_what);
 	static void _bind_methods();
 #ifndef DISABLE_DEPRECATED

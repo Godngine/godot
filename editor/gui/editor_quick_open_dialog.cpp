@@ -46,18 +46,27 @@
 #include "scene/gui/texture_rect.h"
 #include "scene/gui/tree.h"
 
-Rect2i HighlightedLabel::get_substr_rect(const Vector2i &p_substr) {
-	Ref<Font> font = get_theme_font(SceneStringName(font));
-	int font_size = get_theme_font_size(SceneStringName(font_size));
-	Vector2i prefix = font->get_string_size(get_text().substr(0, p_substr.x), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size);
-	prefix.y = 0;
-	Vector2i size = font->get_string_size(get_text().substr(p_substr.x, p_substr.y), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size);
-	return { prefix, size };
+void HighlightedLabel::draw_substr_rects(const Label::LayoutData &p_layout, const Vector2i &p_substr) {
+	for (int i = get_lines_skipped(); i < p_layout.line_limit; i++) {
+		Vector<Vector2> ranges = TS->shaped_text_get_selection(get_line_rid(i), p_substr.x, p_substr.x + p_substr.y);
+		Rect2 line_rect = get_line_rect(i);
+		for (const Vector2 &range : ranges) {
+			Rect2 rect = Rect2(Point2(range.x, 0) + line_rect.position, Size2(range.y - range.x, line_rect.size.y));
+			rect.position = p_layout.offset + line_rect.position;
+			rect.position.x += range.x;
+			rect.size = Size2(range.y - range.x, line_rect.size.y);
+			rect.size.x = MIN(rect.size.x, line_rect.size.x - range.x);
+			if (rect.size.x > 0) {
+				draw_rect(rect, Color(1, 1, 1, 0.07), true);
+				draw_rect(rect, Color(0.5, 0.7, 1.0, 0.4), false, 1);
+			}
+		}
+	}
 }
 
 void HighlightedLabel::add_highlight(const Vector2i &p_interval) {
 	if (p_interval.y > 0) {
-		highlights.append(get_substr_rect(p_interval));
+		highlights.append(p_interval);
 		queue_redraw();
 	}
 }
@@ -73,18 +82,10 @@ void HighlightedLabel::_notification(int p_notification) {
 			return;
 		}
 
-		Vector2i offset = get_character_bounds(0).position;
-		int max_width = get_size().x - 5 * EDSCALE;
+		Label::LayoutData parameters = get_layout_data();
 
-		// NB: The highlight rect is computed exclusively based on the assigned text, but layout related values
-		// are only added in here each time the label is drawn.
-		for (Rect2i rect : highlights) {
-			rect.position += offset;
-			rect.size.x = MIN(rect.size.x, max_width - rect.position.x);
-			if (rect.size.x > 0) {
-				draw_rect(rect, Color(1, 1, 1, 0.07), true);
-				draw_rect(rect, Color(0.5, 0.7, 1.0, 0.4), false, 1);
-			}
+		for (const Vector2i &substr : highlights) {
+			draw_substr_rects(parameters, substr);
 		}
 	}
 }

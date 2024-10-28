@@ -66,10 +66,11 @@ struct QuickOpenResultCandidate {
 class HighlightedLabel : public Label {
 	GDCLASS(HighlightedLabel, Label)
 
-	Vector<Rect2i> highlights;
+	Vector<Vector2i> highlights;
+
+	void draw_substr_rects(const Label::LayoutData &p_parameters, const Vector2i &p_interval);
 
 public:
-	Rect2i get_substr_rect(const Vector2i &p_interval);
 	void add_highlight(const Vector2i &p_interval);
 	void reset_highlights();
 

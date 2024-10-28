@@ -68,7 +68,7 @@ class HighlightedLabel : public Label {
 
 	Vector<Vector2i> highlights;
 
-	void draw_substr_rects(const Label::LayoutData &p_parameters, const Vector2i &p_interval);
+	void draw_substr_rects(const Vector2i &p_substr, Vector2 p_offset, int p_line_limit, int line_spacing);
 
 public:
 	void add_highlight(const Vector2i &p_interval);

@@ -346,6 +346,8 @@ RID Label::get_line_rid(int p_line) const {
 }
 
 Rect2 Label::get_line_rect(int p_line) const {
+	// Returns a rect providing the line's horizontal offset and total size. To determine the vertical
+	// offset, use r_offset and r_line_spacing from get_layout_data.
 	bool rtl = TS->shaped_text_get_inferred_direction(text_rid) == TextServer::DIRECTION_RTL;
 	bool rtl_layout = is_layout_rtl();
 	Ref<StyleBox> style = theme_cache.normal_style;
@@ -383,7 +385,10 @@ Rect2 Label::get_line_rect(int p_line) const {
 	return Rect2(offset, line_size);
 }
 
-Label::LayoutData Label::get_layout_data() const {
+void Label::get_layout_data(Vector2 &r_offset, int &r_line_limit, int &r_line_spacing) const {
+	// Computes several common parameters involved in laying out and rendering text set to this label.
+	// Only vertical margin is considered in r_offset: use get_line_rect to get the horizontal offset
+	// for a given line of text.
 	Size2 size = get_size();
 	Ref<StyleBox> style = theme_cache.normal_style;
 	int line_spacing = settings.is_valid() ? settings->get_line_spacing() : theme_cache.line_spacing;
@@ -404,11 +409,11 @@ Label::LayoutData Label::get_layout_data() const {
 		lines_visible = max_lines_visible;
 	}
 
-	int last_line = MIN(lines_rid.size(), lines_visible + lines_skipped);
+	r_line_limit = MIN(lines_rid.size(), lines_visible + lines_skipped);
 
 	// Get real total height.
 	total_h = 0;
-	for (int64_t i = lines_skipped; i < last_line; i++) {
+	for (int64_t i = lines_skipped; i < r_line_limit; i++) {
 		total_h += TS->shaped_text_get_size(lines_rid[i]).y + line_spacing;
 	}
 	total_h += style->get_margin(SIDE_TOP) + style->get_margin(SIDE_BOTTOM);
@@ -441,9 +446,8 @@ Label::LayoutData Label::get_layout_data() const {
 		}
 	}
 
-	Vector2 offset;
-	offset.y = style->get_offset().y + vbegin;
-	return { offset, last_line, line_spacing + vsep };
+	r_offset = { 0, style->get_offset().y + vbegin };
+	r_line_spacing = line_spacing + vsep;
 }
 
 PackedStringArray Label::get_configuration_warnings() const {
@@ -547,18 +551,21 @@ void Label::_notification(int p_what) {
 			bool trim_glyphs_ltr = (visible_chars >= 0) && ((visible_chars_behavior == TextServer::VC_GLYPHS_LTR) || ((visible_chars_behavior == TextServer::VC_GLYPHS_AUTO) && !rtl_layout));
 			bool trim_glyphs_rtl = (visible_chars >= 0) && ((visible_chars_behavior == TextServer::VC_GLYPHS_RTL) || ((visible_chars_behavior == TextServer::VC_GLYPHS_AUTO) && rtl_layout));
 
-			Label::LayoutData layout = get_layout_data();
-			Vector2 ofs = layout.offset;
+			Vector2 ofs;
+			int line_limit;
+			int line_spacing;
+			get_layout_data(ofs, line_limit, line_spacing);
+
 			int processed_glyphs = 0;
 			int total_glyphs = 0;
 
-			for (int64_t i = lines_skipped; i < layout.line_limit; i++) {
+			for (int64_t i = lines_skipped; i < line_limit; i++) {
 				total_glyphs += TS->shaped_text_get_glyph_count(lines_rid[i]) + TS->shaped_text_get_ellipsis_glyph_count(lines_rid[i]);
 			}
 
 			int visible_glyphs = total_glyphs * visible_ratio;
 
-			for (int i = lines_skipped; i < layout.line_limit; i++) {
+			for (int i = lines_skipped; i < line_limit; i++) {
 				Vector2 line_offset = get_line_rect(i).position;
 				ofs.x = line_offset.x;
 				ofs.y += TS->shaped_text_get_ascent(lines_rid[i]);
@@ -651,7 +658,7 @@ void Label::_notification(int p_what) {
 						}
 					}
 				}
-				ofs.y += TS->shaped_text_get_descent(lines_rid[i]) + layout.line_spacing;
+				ofs.y += TS->shaped_text_get_descent(lines_rid[i]) + line_spacing;
 			}
 		} break;
 
@@ -668,10 +675,13 @@ void Label::_notification(int p_what) {
 
 Rect2 Label::get_character_bounds(int p_pos) const {
 	_ensure_shaped();
-	Label::LayoutData layout = get_layout_data();
-	Vector2 ofs = layout.offset;
 
-	for (int i = lines_skipped; i < layout.line_limit; i++) {
+	Vector2 ofs;
+	int line_limit;
+	int line_spacing;
+	get_layout_data(ofs, line_limit, line_spacing);
+
+	for (int i = lines_skipped; i < line_limit; i++) {
 		Rect2 line_rect = get_line_rect(i);
 		ofs.x = line_rect.position.x;
 		int v_size = TS->shaped_text_get_glyph_count(lines_rid[i]);
@@ -693,7 +703,7 @@ Rect2 Label::get_character_bounds(int p_pos) const {
 			}
 			gl_off += glyphs[j].advance * glyphs[j].repeat;
 		}
-		ofs.y += TS->shaped_text_get_ascent(lines_rid[i]) + TS->shaped_text_get_descent(lines_rid[i]) + layout.line_spacing;
+		ofs.y += TS->shaped_text_get_ascent(lines_rid[i]) + TS->shaped_text_get_descent(lines_rid[i]) + line_spacing;
 	}
 	return Rect2();
 }

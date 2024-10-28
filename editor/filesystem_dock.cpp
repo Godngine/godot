@@ -1809,6 +1809,11 @@ void FileSystemDock::_rename_operation_confirm() {
 
 	print_verbose("FileSystem: calling rescan.");
 	_rescan();
+
+	if (ti) {
+		tree->set_selected(ti);
+		tree->grab_focus();
+	}
 }
 
 void FileSystemDock::_duplicate_operation_confirm(const String &p_path) {

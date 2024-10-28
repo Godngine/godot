@@ -57,11 +57,20 @@ private:
 	Size2 minsize;
 	bool uppercase = false;
 
-	bool lines_dirty = true;
+	struct Paragraph {
+		bool lines_dirty = true;
+		bool dirty = true;
+
+		String text;
+		RID text_rid;
+		Vector<RID> lines_rid;
+	};
 	bool dirty = true;
 	bool font_dirty = true;
-	RID text_rid;
-	Vector<RID> lines_rid;
+	bool text_dirty = true;
+	Vector<Paragraph> paragraphs;
+	int total_line_count = 0;
+	String paragraph_separator = "\\n";
 
 	String language;
 	TextDirection text_direction = TEXT_DIRECTION_AUTO;
@@ -83,6 +92,7 @@ private:
 
 		int font_size = 0;
 		int line_spacing = 0;
+		int paragraph_spacing = 0;
 		Color font_color;
 		Color font_shadow_color;
 		Point2 font_shadow_offset;
@@ -101,6 +111,9 @@ protected:
 #ifndef DISABLE_DEPRECATED
 	bool _set(const StringName &p_name, const Variant &p_value);
 #endif
+
+	void _ensure_shaped() const;
+	RID get_line_rid(int p_line) const;
 
 public:
 	virtual Size2 get_minimum_size() const override;
@@ -123,6 +136,9 @@ public:
 
 	void set_language(const String &p_language);
 	String get_language() const;
+
+	void set_paragraph_separator(const String &p_paragraph_separator);
+	String get_paragraph_separator() const;
 
 	void set_structured_text_bidi_override(TextServer::StructuredTextParser p_parser);
 	TextServer::StructuredTextParser get_structured_text_bidi_override() const;

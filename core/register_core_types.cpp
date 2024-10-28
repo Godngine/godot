@@ -45,6 +45,8 @@
 #include "core/io/config_file.h"
 #include "core/io/dir_access.h"
 #include "core/io/dtls_server.h"
+#include "core/io/filesystem.h"
+#include "core/io/filesystem_protocol.h"
 #include "core/io/http_client.h"
 #include "core/io/image_loader.h"
 #include "core/io/json.h"
@@ -241,6 +243,7 @@ void register_core_types() {
 	GDREGISTER_CLASS(ResourceFormatLoader);
 	GDREGISTER_CLASS(ResourceFormatSaver);
 
+	GDREGISTER_ABSTRACT_CLASS(FileSystemProtocol);
 	GDREGISTER_ABSTRACT_CLASS(FileAccess);
 	GDREGISTER_ABSTRACT_CLASS(DirAccess);
 	GDREGISTER_CLASS(core_bind::Thread);
@@ -317,6 +320,7 @@ void register_core_singletons() {
 	OS::get_singleton()->benchmark_begin_measure("Core", "Register Singletons");
 
 	GDREGISTER_CLASS(ProjectSettings);
+	GDREGISTER_CLASS(FileSystem);
 	GDREGISTER_ABSTRACT_CLASS(IP);
 	GDREGISTER_CLASS(core_bind::Geometry2D);
 	GDREGISTER_CLASS(core_bind::Geometry3D);
@@ -334,6 +338,7 @@ void register_core_singletons() {
 	GDREGISTER_CLASS(Time);
 
 	Engine::get_singleton()->add_singleton(Engine::Singleton("ProjectSettings", ProjectSettings::get_singleton()));
+	Engine::get_singleton()->add_singleton(Engine::Singleton("FileSystem", FileSystem::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("IP", IP::get_singleton(), "IP"));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Geometry2D", core_bind::Geometry2D::get_singleton()));
 	Engine::get_singleton()->add_singleton(Engine::Singleton("Geometry3D", core_bind::Geometry3D::get_singleton()));

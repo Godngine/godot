@@ -1,15 +1,11 @@
 GDTEST_OK
 >> WARNING
->> Line: 8
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "_get_property_list" prefixed with "_", which would be a private member.
->> WARNING
 >> Line: 19
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "_get_property_list" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_get_property_list" in an external class.
 >> WARNING
 >> Line: 21
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "_get_property_list" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_get_property_list" in an external class.
 { "property": "definition" }
 { "property": "definition", "new": "new" }

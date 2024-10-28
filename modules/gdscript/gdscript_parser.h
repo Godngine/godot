@@ -337,6 +337,7 @@ public:
 			VARIABLE,
 			WHILE,
 		};
+
 		Type type = NONE;
 
 		int start_line = 0, end_line = 0;
@@ -797,20 +798,6 @@ public:
 			members.push_back(Member(p_annotation_node));
 		}
 
-		Vector<StringName> get_super_class_fqcns() const {
-			Vector<StringName> ret;
-
-			const ClassNode *iterated_class = base_type.class_type;
-			while (iterated_class) {
-				if (iterated_class->datatype.kind == DataType::SCRIPT || iterated_class->datatype.kind == DataType::CLASS) {
-					ret.append(iterated_class->fqcn);
-				}
-				iterated_class = iterated_class->base_type.class_type;
-			}
-
-			return ret;
-		}
-
 		ClassNode() {
 			type = CLASS;
 		}
@@ -870,7 +857,6 @@ public:
 		SuiteNode *body = nullptr;
 		bool is_static = false; // For lambdas it's determined in the analyzer.
 		bool is_coroutine = false;
-		// bool is_virtual = false;
 		Variant rpc_config;
 		MethodInfo info;
 		LambdaNode *source_lambda = nullptr;
@@ -899,6 +885,12 @@ public:
 	struct IdentifierNode : public ExpressionNode {
 		StringName name;
 		SuiteNode *suite = nullptr; // The block in which the identifier is used.
+
+		enum NamePrefixUnderlineStatus {
+			UNDERLINE_NORMAL_MARK,
+			UNDERLINE_MARKED_AS_PRIVATE,
+			UNDERLINE_ERROR,
+		};
 
 		enum Source {
 			UNDEFINED_SOURCE,
@@ -930,6 +922,17 @@ public:
 		FunctionNode *source_function = nullptr; // TODO: Rename to disambiguate `function_source`.
 
 		int usages = 0; // Useful for binds/iterator variable.
+
+		NamePrefixUnderlineStatus get_name_prefixed_with_underlines_status() const {
+			ERR_FAIL_COND_V_MSG(name.is_empty(), NamePrefixUnderlineStatus::UNDERLINE_ERROR, R"(The name is empty, returns error value.)");
+
+			String string_named = String(name);
+			if (string_named.begins_with("_")) {
+				return NamePrefixUnderlineStatus::UNDERLINE_MARKED_AS_PRIVATE;
+			}
+
+			return NamePrefixUnderlineStatus::UNDERLINE_NORMAL_MARK;
+		}
 
 		IdentifierNode() {
 			type = IDENTIFIER;
@@ -1522,7 +1525,6 @@ private:
 	bool tool_annotation(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
 	bool icon_annotation(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
 	bool onready_annotation(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
-	// bool virtual_annotation(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
 	template <PropertyHint t_hint, Variant::Type t_type>
 	bool export_annotations(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);
 	bool export_storage_annotation(AnnotationNode *p_annotation, Node *p_target, ClassNode *p_class);

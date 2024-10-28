@@ -5,21 +5,21 @@ GDTEST_OK
 >> Integer division, decimal part will be discarded.
 >> WARNING
 >> Line: 6
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "__" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
 >> WARNING
 >> Line: 7
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "__" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
 >> WARNING
 >> Line: 8
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "__" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
 >> WARNING
 >> Line: 9
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "__" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.
 >> WARNING
 >> Line: 10
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "__" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "__" in an external class.

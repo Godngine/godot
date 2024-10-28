@@ -321,18 +321,32 @@ void GDScriptAnalyzer::get_class_node_current_scope_classes(GDScriptParser::Clas
 }
 
 #ifdef DEBUG_ENABLED
-void GDScriptAnalyzer::check_access_private_member(GDScriptParser::IdentifierNode *p_identifier, const bool p_is_call) {
-	if (p_identifier == nullptr) {
+void GDScriptAnalyzer::check_identifier_private(GDScriptParser::IdentifierNode *p_identifier, const bool p_is_call) {
+	if (p_identifier == nullptr || p_identifier->name.is_empty()) {
 		return;
 	}
-	if (!String(p_identifier->name).begins_with("_")) {
+	if (parser->current_class == nullptr) {
 		return;
 	}
-	if (parser->current_class->get_datatype().kind != GDScriptParser::DataType::CLASS && parser->current_class->get_datatype().kind != GDScriptParser::DataType::SCRIPT) {
+
+	const GDScriptParser::IdentifierNode::NamePrefixUnderlineStatus underlines_status = p_identifier->get_name_prefixed_with_underlines_status();
+	// The following piece is written like this for future implementation of class-owned members (or real `private` members).
+	const bool marked_as_private = underlines_status == GDScriptParser::IdentifierNode::UNDERLINE_MARKED_AS_PRIVATE;
+	if (!marked_as_private) {
 		return;
 	}
-	if (!parser->current_class->has_member(p_identifier->name)) {
-		parser->push_warning(p_identifier, p_is_call ? GDScriptWarning::CALLING_UNDERLINE_PREFIXED_METHOD : GDScriptWarning::ACCESSING_UNDERLINE_PREFIXED_MEMBER, p_identifier->name);
+
+	bool throw_warning = true;
+	const GDScriptParser::ClassNode *iterated_class = parser->current_class;
+	while (iterated_class != nullptr) {
+		if (iterated_class->has_member(p_identifier->name)) {
+			throw_warning = false;
+			break;
+		}
+		iterated_class = iterated_class->base_type.class_type;
+	}
+	if (throw_warning) {
+		parser->push_warning(p_identifier, p_is_call ? GDScriptWarning::CALLING_PRIVATE_METHOD : GDScriptWarning::ACCESSING_PRIVATE_MEMBER, p_identifier->name);
 	}
 }
 #endif
@@ -3496,7 +3510,7 @@ void GDScriptAnalyzer::reduce_call(GDScriptParser::CallNode *p_call, bool p_is_a
 
 #ifdef DEBUG_ENABLED
 		GDScriptParser::IdentifierNode *identifier = static_cast<GDScriptParser::IdentifierNode *>(p_call->callee);
-		check_access_private_member(identifier);
+		check_identifier_private(identifier);
 #endif
 	} else if (callee_type == GDScriptParser::Node::IDENTIFIER) {
 		base_type = parser->current_class->get_datatype();
@@ -3504,7 +3518,7 @@ void GDScriptAnalyzer::reduce_call(GDScriptParser::CallNode *p_call, bool p_is_a
 		is_self = true;
 #ifdef DEBUG_ENABLED
 		GDScriptParser::IdentifierNode *identifier = static_cast<GDScriptParser::IdentifierNode *>(p_call->callee);
-		check_access_private_member(identifier);
+		check_identifier_private(identifier);
 #endif
 	} else if (callee_type == GDScriptParser::Node::SUBSCRIPT) {
 		GDScriptParser::SubscriptNode *subscript = static_cast<GDScriptParser::SubscriptNode *>(p_call->callee);
@@ -3540,7 +3554,7 @@ void GDScriptAnalyzer::reduce_call(GDScriptParser::CallNode *p_call, bool p_is_a
 			is_self = subscript->base->type == GDScriptParser::Node::SELF;
 		}
 #ifdef DEBUG_ENABLED
-		check_access_private_member(subscript->attribute);
+		check_identifier_private(subscript->attribute);
 #endif
 	} else {
 		// Invalid call. Error already sent in parser.
@@ -4440,7 +4454,7 @@ void GDScriptAnalyzer::reduce_identifier(GDScriptParser::IdentifierNode *p_ident
 			}
 		}
 #ifdef DEBUG_ENABLED
-		check_access_private_member(p_identifier);
+		check_identifier_private(p_identifier);
 #endif
 		return;
 	}
@@ -4804,7 +4818,7 @@ void GDScriptAnalyzer::reduce_subscript(GDScriptParser::SubscriptNode *p_subscri
 			result_type.kind = GDScriptParser::DataType::VARIANT;
 		}
 #ifdef DEBUG_ENABLED
-		check_access_private_member(p_subscript->attribute);
+		check_identifier_private(p_subscript->attribute);
 #endif
 	} else {
 		if (p_subscript->index == nullptr) {

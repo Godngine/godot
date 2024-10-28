@@ -1,8 +1,8 @@
 GDTEST_OK
 >> WARNING
 >> Line: 21
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "_tmp" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_tmp" in an external class.
 get static_var
 get member_var
 set static_var 1

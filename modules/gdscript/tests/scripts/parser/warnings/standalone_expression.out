@@ -17,5 +17,5 @@ GDTEST_OK
 >> Standalone expression (the line may have no effect).
 >> WARNING
 >> Line: 11
->> ACCESSING_UNDERLINE_PREFIXED_MEMBER
->> Trying accessing the member "_a" prefixed with "_", which would be a private member.
+>> ACCESSING_PRIVATE_MEMBER
+>> Trying accessing a private member "_a" in an external class.

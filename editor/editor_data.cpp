@@ -727,7 +727,12 @@ bool EditorData::check_and_update_scene(int p_idx) {
 		// Transfer selection.
 		List<Node *> new_selection;
 		for (const Node *E : edited_scene.write[p_idx].selection) {
-			NodePath p = edited_scene[p_idx].root->get_path_to(E);
+			NodePath p;
+			if (E->get_owner() && E->get_owner()->is_exposed_in_owner(E)) {
+				p = edited_scene[p_idx].root->get_unique_path_to(E);
+			} else {
+				p = edited_scene[p_idx].root->get_path_to(E);
+			}
 			Node *new_node = new_scene->get_node(p);
 			if (new_node) {
 				new_selection.push_back(new_node);

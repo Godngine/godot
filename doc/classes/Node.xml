@@ -594,6 +594,20 @@
 				Returns [code]true[/code] if [param node] has editable children enabled relative to this node. This method is intended to be used in editor plugins and tools. See also [method set_editable_instance].
 			</description>
 		</method>
+		<method name="is_exposed_in_owner" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="node" type="Node" />
+			<description>
+				Returns [code]true[/code] if [param node] has been exposed relative to this node's owner. This method is intended to be used in editor plugins and tools. See also [method set_exposed_in_owner].
+			</description>
+		</method>
+		<method name="is_exposed_in_scene" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="node" type="Node" />
+			<description>
+				Returns [code]true[/code] if [param node] has been exposed relative to this scene. This method is intended to be used in editor plugins and tools. See also [method set_exposed_in_scene].
+			</description>
+		</method>
 		<method name="is_greater_than" qualifiers="const">
 			<return type="bool" />
 			<param index="0" name="node" type="Node" />
@@ -883,6 +897,20 @@
 			<param index="1" name="is_editable" type="bool" />
 			<description>
 				Set to [code]true[/code] to allow all nodes owned by [param node] to be available, and editable, in the Scene dock, even if their [member owner] is not the scene root. This method is intended to be used in editor plugins and tools, but it also works in release builds. See also [method is_editable_instance].
+			</description>
+		</method>
+		<method name="set_exposed_in_owner">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Sets this node's state as an exposed node in its [member owner]. This marks the node in the scene tree as exposed.
+			</description>
+		</method>
+		<method name="set_exposed_in_scene">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+				Sets this node's state as an exposed node in this [PackedScene]. This allows the node to be accessed in the editor when the scene is instantiated in another. It also enforces that the node is unique, see [member unique_name_in_owner].
 			</description>
 		</method>
 		<method name="set_multiplayer_authority">

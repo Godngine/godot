@@ -1684,6 +1684,12 @@ void SceneTreeDialog::_show_all_nodes_changed(bool p_button_pressed) {
 }
 
 void SceneTreeDialog::set_valid_types(const Vector<StringName> &p_valid) {
+	if (allowed_types_hbox) {
+		content->remove_child(allowed_types_hbox);
+		allowed_types_hbox->queue_free();
+		valid_type_icons.clear();
+	}
+
 	if (p_valid.is_empty()) {
 		return;
 	}
@@ -1691,6 +1697,7 @@ void SceneTreeDialog::set_valid_types(const Vector<StringName> &p_valid) {
 	tree->set_valid_types(p_valid);
 
 	HBoxContainer *hbox = memnew(HBoxContainer);
+	allowed_types_hbox = hbox;
 	content->add_child(hbox);
 	content->move_child(hbox, 0);
 

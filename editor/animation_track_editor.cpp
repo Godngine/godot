@@ -5297,6 +5297,35 @@ void AnimationTrackEditor::_add_track(int p_type) {
 		return;
 	}
 	adding_track_type = p_type;
+	Vector<StringName> valid_types;
+	switch (adding_track_type) {
+		case Animation::TYPE_METHOD:
+		case Animation::TYPE_BEZIER:
+		case Animation::TYPE_VALUE: { // "Property" track
+		} break;
+		case Animation::TYPE_BLEND_SHAPE: {
+			// Blend Shape is a property of MeshInstance3D
+			valid_types.push_back(StringName("MeshInstance3D"));
+		} break;
+		case Animation::TYPE_POSITION_3D:
+		case Animation::TYPE_ROTATION_3D:
+		case Animation::TYPE_SCALE_3D: {
+			// 3D Properties come from nodes inheriting Node3D
+			valid_types.push_back(StringName("Node3D"));
+		} break;
+		case Animation::TYPE_AUDIO: {
+			valid_types.push_back(StringName("AudioStreamPlayer"));
+			valid_types.push_back(StringName("AudioStreamPlayer2D"));
+			valid_types.push_back(StringName("AudioStreamPlayer3D"));
+		} break;
+		case Animation::TYPE_ANIMATION: {
+			valid_types.push_back(StringName("AnimationPlayer"));
+		} break;
+	}
+	// set_valid_types doesn't show icons if it's on the scene tree, no idea why
+	remove_child(pick_track);
+	pick_track->set_valid_types(valid_types);
+	add_child(pick_track);
 	pick_track->popup_scenetree_dialog(nullptr, root_node);
 	pick_track->get_filter_line_edit()->clear();
 	pick_track->get_filter_line_edit()->grab_focus();
